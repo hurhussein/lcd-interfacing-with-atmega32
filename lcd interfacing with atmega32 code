@@ -1,0 +1,110 @@
+#include <avr/io.h>
+#include <util/delay.h>
+
+#define  LCD_DATA PORTB
+#define  en PA6
+#define  rw PA5
+#define  rs PA7
+
+
+ void init_lcd( void);
+ void lcd_cmd ( unsigned  char cmd);
+ void lcd_write( unsigned char data );
+
+
+ 
+ 
+int main()
+ { 
+DDRB=0xFF;
+ DDRA= 0xFF;
+    
+    init_lcd ();
+    _delay_ms(  100);
+    
+	lcd_cmd(0x01); //clr 
+	_delay_ms(10);
+  
+    
+   while (1){ 
+         lcd_cmd (0x80);//1st row
+       lcd_write('h');
+      _delay_ms(100);
+             lcd_write('e');
+      _delay_ms(100);
+             lcd_write('l');
+      _delay_ms(100);
+        lcd_write('l');
+      _delay_ms(100);
+             lcd_write('o');
+      _delay_ms(100);
+      
+        lcd_cmd (0xC0);
+       _delay_ms(100);
+         lcd_cmd (0x0C);//2st row
+       _delay_ms(100);
+      
+         lcd_write('a');
+      _delay_ms(100);
+         lcd_write('r');
+      _delay_ms(100);
+         lcd_write('e');
+      _delay_ms(100);
+         lcd_write('  ');
+      _delay_ms(100);
+         lcd_write('y');
+      _delay_ms(100);
+         lcd_write('o');
+      _delay_ms(100);
+         lcd_write('u');
+      _delay_ms(100);
+          lcd_write('  ');
+      _delay_ms(100);
+         lcd_write('o');
+      _delay_ms(100);
+         lcd_write('k');
+      _delay_ms(100);
+      
+        lcd_cmd (0x0E); //display on
+	_delay_ms(100);
+	lcd_cmd (0x01);//clr
+	
+
+ }
+ 
+ }
+  void init_lcd( void) {
+      lcd_cmd (0x38);// 8 bit mode 
+        _delay_ms(  1   );
+        lcd_cmd (0x0E);// ebable cursor
+        _delay_ms(  1  );
+        lcd_cmd (0x01);//clear lcd
+        _delay_ms(  1 );
+        lcd_cmd (0x06);//cursor inc
+        _delay_ms(  1 );
+        lcd_cmd (0x80);//select 1st row ,i col
+        _delay_ms(  1 );
+
+  }
+  
+   void lcd_cmd ( unsigned  char cmd){
+      LCD_DATA= cmd ;
+      PORTA  &= ~(  1<< rs); // using port to send data
+       PORTA  &= ~(  1<< rw); //clrar pin
+       PORTA   |= (  1<< en); // set enable 
+          _delay_ms(  1 );
+      PORTA &= ~(  1<< en); //clear enable
+
+   }
+   
+    void lcd_write( unsigned char data ){
+       
+       LCD_DATA= data ;
+      PORTA |= (  1<< rs);
+       PORTA &=~(  1<< rw);
+       PORTA |= (  1<< en);
+          _delay_ms(  1 );
+      PORTA &=~(  1<< en);
+    }
+
+
